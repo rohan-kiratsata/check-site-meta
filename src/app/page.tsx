@@ -1,103 +1,176 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { IconsGroup, MetadataBlock, MetadataGroup } from "@/components";
+import SearchBar from "@/components/search-bar";
+
+export default function HomePage() {
+  const [url, setUrl] = useState("");
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+
+  const clearResults = () => {
+    setData(null);
+    setError("");
+    setLoading(false);
+  };
+
+  const saveToHistory = (url: string) => {
+    const existing = JSON.parse(localStorage.getItem("meta-history") || "[]");
+    const updated = [url, ...existing.filter((u: string) => u !== url)].slice(
+      0,
+      10
+    );
+    localStorage.setItem("meta-history", JSON.stringify(updated));
+    setHistory(updated);
+  };
+
+  const fetchMetadata = async (customUrl?: string) => {
+    const targetUrl = customUrl?.trim() || url.trim();
+
+    if (!targetUrl) return;
+
+    setLoading(true);
+    setError("");
+    setData(null);
+
+    try {
+      const res = await fetch(
+        `/api/scrape?url=${encodeURIComponent(targetUrl)}`
+      );
+      if (!res.ok) throw new Error("Server error");
+
+      const json = await res.json();
+      if (json.error) throw new Error(json.message);
+
+      setData(json);
+      saveToHistory(targetUrl);
+    } catch (err: any) {
+      setError("Could not fetch metadata. " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("meta-history") || "[]");
+    setHistory(stored);
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center justify-start px-4 py-16 space-y-8">
+      <h1 className="text-3xl font-semibold tracking-tight font-mono">
+        Check Site Metadata
+      </h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-xl"
+      >
+        <SearchBar
+          url={url}
+          setUrl={setUrl}
+          fetchMetadata={fetchMetadata}
+          isLoading={loading}
+          clearResults={clearResults}
+        />
+      </motion.div>
+
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="text-gray-500 text-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Fetching metadata...
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="w-full max-w-md bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <strong className="block mb-1">
+              Oops! Couldn&apos;t fetch metadata. Try something else.
+            </strong>
+            <span className="text-xs">{error}</span>
+            <p className="mt-2 text-gray-500">
+              Some sites block metadata scraping (like OpenAI, banking portals,
+              or Cloudflare-protected sites).
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {!data && !loading && !error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full max-w-xl space-y-4 text-sm text-gray-500"
+          >
+            <div className="text-center">
+              👋 Paste a URL to check its metadata
+            </div>
+
+            {history.length > 0 && (
+              <div>
+                <div className="text-xs uppercase text-gray-400 mb-2">
+                  Recent URLs
+                </div>
+                <ul className="space-y-2">
+                  {history.map((url, i) => (
+                    <li
+                      key={i}
+                      className="cursor-pointer underline text-blue-600 hover:text-blue-800 transition"
+                      onClick={() => {
+                        setUrl(url);
+                        fetchMetadata(); // auto-refetch on click
+                      }}
+                    >
+                      {url}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {data && (
+          <motion.div
+            className="w-full max-w-3xl text-sm bg-white p-6 rounded-2xl space-y-6"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+          >
+            <MetadataBlock label="Title" value={data.title} />
+            <MetadataBlock label="Description" value={data.description} />
+            <MetadataBlock label="Author" value={data.author} />
+            <MetadataBlock label="Keywords" value={data.keywords} />
+
+            {data.ogTags?.length > 0 && (
+              <MetadataGroup label="OpenGraph Tags" items={data.ogTags} />
+            )}
+            {data.twitterTags?.length > 0 && (
+              <MetadataGroup label="Twitter Tags" items={data.twitterTags} />
+            )}
+            {data.icons?.length > 0 && <IconsGroup icons={data.icons} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </main>
   );
 }
