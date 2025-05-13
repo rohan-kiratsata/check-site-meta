@@ -1,3 +1,28 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+export function getMetaImageUrl(
+  items: { name: string; content: string }[]
+): string | null {
+  if (!items?.length) return null;
+
+  const candidates = [
+    "og:image",
+    "twitter:image",
+    "twitter:image:src",
+    "og:image:secure_url",
+  ];
+
+  for (const key of candidates) {
+    const found = items.find((item) => item.name === key && item.content);
+    if (found) return found.content;
+  }
+
+  return null;
+}
 export function isValidUrl(str: string): boolean {
   try {
     const url = new URL(str);
@@ -16,16 +41,4 @@ export function isImageUrl(url: string): boolean {
     url.includes("/images/") ||
     url.includes("imagecdn")
   );
-}
-
-export function getMetaImageUrl(items: any[]): string | null {
-  if (!items?.length) return null;
-
-  // Check for og:image or twitter:image
-  const ogImage = items.find((item) => item.name === "og:image")?.content;
-  const twitterImage = items.find(
-    (item) => item.name === "twitter:image"
-  )?.content;
-
-  return ogImage || twitterImage || null;
 }

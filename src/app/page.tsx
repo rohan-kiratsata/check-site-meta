@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { IconsGroup, MetadataBlock, MetadataGroup } from "@/components";
 import SearchBar from "@/components/search-bar";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PreviewTab from "@/components/preview-tab";
+import FloatingFooter from "@/components/floating-footer";
 export default function HomePage() {
   const [url, setUrl] = useState("");
   const [data, setData] = useState<any>(null);
@@ -62,6 +64,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center justify-start px-4 py-16 space-y-8">
+      <FloatingFooter />
       <h1 className="text-3xl font-semibold tracking-tight font-mono">
         Check Site Metadata
       </h1>
@@ -81,9 +84,10 @@ export default function HomePage() {
         />
       </motion.div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {loading && (
           <motion.div
+            key="loading"
             className="text-gray-500 text-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -94,9 +98,10 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {error && (
           <motion.div
+            key="error"
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -114,9 +119,10 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!data && !loading && !error && (
           <motion.div
+            key="empty-state"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="w-full max-w-xl space-y-4 text-sm text-gray-500"
@@ -133,11 +139,11 @@ export default function HomePage() {
                 <ul className="space-y-2">
                   {history.map((url, i) => (
                     <li
-                      key={i}
+                      key={`history-${i}`}
                       className="cursor-pointer underline text-blue-600 hover:text-blue-800 transition"
                       onClick={() => {
                         setUrl(url);
-                        fetchMetadata(); // auto-refetch on click
+                        fetchMetadata(url);
                       }}
                     >
                       {url}
@@ -148,26 +154,64 @@ export default function HomePage() {
             )}
           </motion.div>
         )}
+      </AnimatePresence>
 
-        {data && (
+      <AnimatePresence mode="wait">
+        {data && !error && (
           <motion.div
-            className="w-full max-w-3xl text-sm bg-white p-6 rounded-2xl space-y-6"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+            key="tabs-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <MetadataBlock label="Title" value={data.title} />
-            <MetadataBlock label="Description" value={data.description} />
-            <MetadataBlock label="Author" value={data.author} />
-            <MetadataBlock label="Keywords" value={data.keywords} />
+            <Tabs defaultValue="tags" className="w-full max-w-3xl">
+              <TabsList className="grid w-full grid-cols-2 border">
+                <TabsTrigger value="tags">Raw Tags</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+              </TabsList>
 
-            {data.ogTags?.length > 0 && (
-              <MetadataGroup label="OpenGraph Tags" items={data.ogTags} />
-            )}
-            {data.twitterTags?.length > 0 && (
-              <MetadataGroup label="Twitter Tags" items={data.twitterTags} />
-            )}
-            {data.icons?.length > 0 && <IconsGroup icons={data.icons} />}
+              <TabsContent value="tags">
+                <AnimatePresence mode="wait">
+                  {data && (
+                    <motion.div
+                      key="metadata"
+                      className="w-full max-w-3xl text-sm bg-white p-6 rounded-2xl space-y-6"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <MetadataBlock label="Title" value={data.title} />
+                      <MetadataBlock
+                        label="Description"
+                        value={data.description}
+                      />
+                      <MetadataBlock label="Author" value={data.author} />
+                      <MetadataBlock label="Keywords" value={data.keywords} />
+
+                      {data.ogTags?.length > 0 && (
+                        <MetadataGroup
+                          label="OpenGraph Tags"
+                          items={data.ogTags}
+                        />
+                      )}
+                      {data.twitterTags?.length > 0 && (
+                        <MetadataGroup
+                          label="Twitter Tags"
+                          items={data.twitterTags}
+                        />
+                      )}
+                      {data.icons?.length > 0 && (
+                        <IconsGroup icons={data.icons} />
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </TabsContent>
+
+              <TabsContent value="preview">
+                <PreviewTab data={data} />
+              </TabsContent>
+            </Tabs>
           </motion.div>
         )}
       </AnimatePresence>
