@@ -54,6 +54,7 @@ export async function fetchMetadata(url: string) {
       ogTags,
       twitterTags,
       icons,
+      url,
     };
   } catch (err: any) {
     return { error: true, message: err.message };
