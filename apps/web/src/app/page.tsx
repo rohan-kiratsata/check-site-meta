@@ -164,18 +164,18 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Tabs defaultValue="tags" className="w-full max-w-3xl">
+            <Tabs defaultValue="tags" className="w-3xl max-w-4xl mx-auto">
               <TabsList className="grid w-full grid-cols-2 border">
                 <TabsTrigger value="tags">Raw Tags</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="tags">
+              <TabsContent value="tags" className="py-5">
                 <AnimatePresence mode="wait">
                   {data && (
                     <motion.div
                       key="metadata"
-                      className="w-full max-w-3xl text-sm bg-white p-6 rounded-2xl space-y-6"
+                      className="text-sm rounded-2xl space-y-6"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
@@ -209,7 +209,7 @@ export default function HomePage() {
               </TabsContent>
 
               <TabsContent value="preview">
-                <PreviewTab data={data} />
+                <PreviewTab data={data} url={url} />
               </TabsContent>
             </Tabs>
           </motion.div>
