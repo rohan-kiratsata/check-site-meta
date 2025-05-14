@@ -6,19 +6,19 @@ export default function PreviewTab({ data, url }: { data: any; url: string }) {
   // const ogImage = getMetaImageUrl([...ogTags, ...twitterTags]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
       <GooglePreview data={data} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <IMessagePreview data={data} />
         <div className="flex flex-col gap-2">
           <TwitterPreview data={data} />
           <FacebookPreview data={data} />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <DiscordPreview data={data} />
         <OGPreview data={data} />
-        <div className="col-span-2">
+        <div className="col-span-1 lg:col-span-2">
           <SlackPreview data={data} />
         </div>
       </div>
@@ -32,7 +32,7 @@ function GooglePreview({ data }: { data: any }) {
     (tag: any) => tag.name === "og:site_name"
   )?.content;
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Google</span>
       <div className="mt-2 border p-3 rounded-lg">
         {/* left icon */}
@@ -135,7 +135,7 @@ function IMessagePreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">iMessage</span>
       <div className="mt-2 max-w-[375px]">
         <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200">
@@ -203,7 +203,7 @@ function TwitterPreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Twitter Card</span>
       <div className="mt-2 max-w-[500px] border border-gray-200 rounded-xl overflow-hidden bg-white">
         {ogImage && (
@@ -245,7 +245,7 @@ function FacebookPreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Facebook</span>
       <div className="mt-2 max-w-[500px] border border-gray-300 rounded-lg overflow-hidden bg-white">
         {ogImage && (
@@ -282,7 +282,7 @@ function SlackPreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Slack</span>
       <div className="mt-2 border-l-4 border-l-[#1D9BD1] border-y border-r border-gray-200 bg-white">
         <div className="flex">
@@ -321,7 +321,7 @@ function DiscordPreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Discord</span>
       <div className="mt-2 max-w-[500px] border-l-4 border-l-[#5865F2] rounded-md overflow-hidden bg-[#2F3136]">
         {ogImage && (
@@ -355,7 +355,7 @@ function OGPreview({ data }: { data: any }) {
   )?.content;
 
   return (
-    <section>
+    <section className="w-full">
       <span className="text-sm text-gray-500">Generic Open Graph</span>
       <div className="mt-2 max-w-[500px] border border-gray-200 rounded-lg overflow-hidden bg-white">
         {ogImage && (
