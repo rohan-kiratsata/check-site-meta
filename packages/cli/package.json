@@ -1,6 +1,6 @@
 {
   "name": "check-meta-cli",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "type": "module",
   "bin": {
     "check-meta-cli": "./bin/index.js"
@@ -10,5 +10,11 @@
     "cheerio": "^1.0.0-rc.12",
     "commander": "^13.1.0",
     "open": "^10.1.2"
-  }
+  },
+  "files": [
+    "bin",
+    "lib",
+    "runner.js",
+    "README.md"
+  ]
 }

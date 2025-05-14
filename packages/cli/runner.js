@@ -1,10 +1,14 @@
 import { spawn } from "child_process";
-import path from "path";
+import path, { dirname } from "path";
 import open from "open";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 export async function runDevServer({ metaPort, targetUrl, shouldOpen }) {
-  const webPath = path.resolve(process.cwd(), "apps/web");
+  
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const webPath = path.join(__dirname, "../../apps/web");
 
   // Inject env variable dynamically (NEXT_PUBLIC_DEFAULT_TEST_URL)
   const envFilePath = path.join(webPath, ".env.local");
@@ -14,7 +18,7 @@ export async function runDevServer({ metaPort, targetUrl, shouldOpen }) {
   console.log(`🧪 Injected .env.local with target: ${targetUrl}`);
 
   // Spawn yarn dev inside apps/web
-  const child = spawn("yarn", ["dev", "--port", metaPort], {
+  const child = spawn("yarn", ["next", "dev", "-p", metaPort], {
     cwd: webPath,
     stdio: "inherit",
     shell: true,
