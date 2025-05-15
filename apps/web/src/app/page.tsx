@@ -164,7 +164,7 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Tabs defaultValue="tags" className="w-3xl max-w-4xl mx-auto">
+            <Tabs defaultValue="tags" className="w-full max-w-4xl mx-auto">
               <TabsList className="grid w-full grid-cols-2 border">
                 <TabsTrigger value="tags">Raw Tags</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>

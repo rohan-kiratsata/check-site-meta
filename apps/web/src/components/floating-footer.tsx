@@ -3,7 +3,7 @@ import React from "react";
 
 export default function FloatingFooter() {
   return (
-    <div className="fixed bottom-4 left-4 text-sm text-gray-500 flex items-center space-x-2">
+    <div className="fixed bottom-4 left-4 text-sm text-gray-500 flex items-center space-x-2 bg-white/60 backdrop-blur-sm rounded-lg p-1">
       <a
         href="https://github.com/rohan-kiratsata/check-site-meta"
         target="_blank"
@@ -16,7 +16,7 @@ export default function FloatingFooter() {
       </a>
       <span>•</span>
       <span>
-        Built over night by <Link href="https://x.com/sudorohan">Rohan</Link>
+        Built by <Link href="https://x.com/sudorohan">Rohan</Link>
       </span>
     </div>
   );
