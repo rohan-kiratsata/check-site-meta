@@ -1,10 +1,7 @@
 import { getMetaImageUrl } from "@/lib/utils";
 import Image from "next/image";
 
-export default function PreviewTab({ data, url }: { data: any; url: string }) {
-  // const { title, description, ogTags, twitterTags, icons } = data;
-  // const ogImage = getMetaImageUrl([...ogTags, ...twitterTags]);
-
+export default function PreviewTab({ data }: { data: any }) {
   return (
     <div className="space-y-8 w-full">
       <GooglePreview data={data} />

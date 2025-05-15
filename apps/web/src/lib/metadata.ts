@@ -1,11 +1,24 @@
 import * as cheerio from "cheerio";
-
-// Helper: safe get attribute
-const getAttr = ($: cheerio.CheerioAPI, selector: string, attr: string) =>
-  $(selector).attr(attr) || null;
+import type {
+  ScrapedMetadata,
+  MetadataError,
+  MetadataResponse,
+} from "../types/metadata";
+import {
+  getAttr,
+  extractMetaTags,
+  filterMetaTagsByPrefix,
+  resolveUrl,
+  getTitleFallback,
+  getDescriptionFallback,
+  getAuthorFallback,
+  getKeywordsFallback,
+  getIconFallback,
+  getImageFallback,
+} from "./metadata-utils";
 
 // Main Scraper
-export async function fetchMetadata(url: string) {
+export async function fetchMetadata(url: string): Promise<MetadataResponse> {
   try {
     const response = await fetch(url, {
       headers: {
@@ -18,45 +31,49 @@ export async function fetchMetadata(url: string) {
     }
 
     const html = await response.text();
-    const $ = cheerio.load(html);
+    // Extract only the <head> section for parsing
+    const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+    const headHtml = headMatch ? headMatch[0] : html;
+    const $ = cheerio.load(headHtml);
 
-    const getMeta = (name: string) =>
-      $(`meta[name="${name}"]`).attr("content") ||
-      $(`meta[property="${name}"]`).attr("content") ||
-      null;
+    const metaTags = extractMetaTags($);
+    const ogTags = filterMetaTagsByPrefix(metaTags, "og:");
+    const twitterTags = filterMetaTagsByPrefix(metaTags, "twitter:");
 
-    const metaTags: { name: string; content: string }[] = [];
-    $("meta").each((_, el) => {
-      const name = $(el).attr("name") || $(el).attr("property");
-      const content = $(el).attr("content");
-      if (name && content) metaTags.push({ name, content });
-    });
+    // Use fallback functions for robust extraction
+    const title = getTitleFallback($);
+    const description = getDescriptionFallback($);
+    const author = getAuthorFallback($);
+    const keywords = getKeywordsFallback($);
+    const icons = [getIconFallback($, url)].filter(Boolean) as string[];
+    // Optionally, extract main image (e.g., og:image)
+    // const mainImage = getImageFallback($, url);
 
-    const ogTags = metaTags.filter((m) => m.name.startsWith("og:"));
-    const twitterTags = metaTags.filter((m) => m.name.startsWith("twitter:"));
+    // Map og:image, og:image:secure_url, twitter:image to absolute URLs
+    const resolveMetaImageUrls = (tags: typeof metaTags, pageUrl: string) =>
+      tags.map((tag) =>
+        ["og:image", "og:image:secure_url", "twitter:image"].includes(
+          tag.name
+        ) && tag.content
+          ? { ...tag, content: resolveUrl(tag.content, pageUrl) }
+          : tag
+      );
 
-    const icons = [
-      ...new Set(
-        [
-          getAttr($, 'link[rel="icon"]', "href"),
-          getAttr($, 'link[rel="shortcut icon"]', "href"),
-          getAttr($, 'link[rel="apple-touch-icon"]', "href"),
-          getAttr($, 'link[rel="mask-icon"]', "href"),
-        ].filter(Boolean)
-      ),
-    ];
+    const ogTagsAbs = resolveMetaImageUrls(ogTags, url);
+    const twitterTagsAbs = resolveMetaImageUrls(twitterTags, url);
 
-    return {
-      title: $("title").text() || null,
-      description: getMeta("description"),
-      author: getMeta("author"),
-      keywords: getMeta("keywords"),
-      ogTags,
-      twitterTags,
+    const result: ScrapedMetadata = {
+      title,
+      description,
+      author,
+      keywords,
+      ogTags: ogTagsAbs,
+      twitterTags: twitterTagsAbs,
       icons,
       url,
     };
+    return result;
   } catch (err: any) {
-    return { error: true, message: err.message };
+    return { error: true, message: err.message } as MetadataError;
   }
 }
