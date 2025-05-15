@@ -1,4 +1,3 @@
-import axios from "axios";
 import * as cheerio from "cheerio";
 
 // Helper: safe get attribute
@@ -8,16 +7,17 @@ const getAttr = ($: cheerio.CheerioAPI, selector: string, attr: string) =>
 // Main Scraper
 export async function fetchMetadata(url: string) {
   try {
-    const { data: html } = await axios.get(url, {
-      timeout: 3000,
+    const response = await fetch(url, {
       headers: {
         "User-Agent": "MetadataCheckerBot/1.0 (+https://checksitemeta.com)",
       },
-      // avoid unnecessary redirects/downloads
-      maxContentLength: 1024 * 300, // limit to ~300KB
-      validateStatus: (status) => status >= 200 && status < 400,
     });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
     const getMeta = (name: string) =>
