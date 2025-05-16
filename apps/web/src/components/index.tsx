@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
-import { isImageUrl, isValidUrl } from "@/lib/utils";
-import { getMetaImageUrl } from "@/lib/utils";
+import { isValidUrl } from "@/lib/utils";
 import Link from "next/link";
 
 // Image Preview Component
@@ -10,7 +9,7 @@ export function ImagePreview({ url }: { url: string }) {
   const [isLoading, setIsLoading] = useState(true);
 
   if (isError) {
-    return <div className="text-red-500 text-xs">Failed to load image</div>;
+    return <div className="text-xs text-red-500">Failed to load image</div>;
   }
 
   return (
@@ -40,22 +39,9 @@ export function ExternalLink({ url }: { url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-blue-600 hover:text-blue-800 font-mono flex items-center gap-1 break-all"
+      className="flex items-center gap-1 font-mono break-all text-blue-600 hover:text-blue-800"
     >
       {url}
-      <svg
-        className="w-4 h-4 inline-block flex-shrink-0"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-        />
-      </svg>
     </a>
   );
 }
@@ -68,24 +54,15 @@ export function MetadataBlock({
   value: string;
 }) {
   if (!value) return null;
-
-  const isImage = isImageUrl(value);
   const isUrl = isValidUrl(value);
 
   return (
-    <div className="border border-gray-200 p-3 rounded-xl">
-      <div className="text-gray-500">{label}</div>
-      {isImage ? (
-        <div className="mt-2">
-          <ImagePreview url={value} />
-          <div className="mt-2">
-            <ExternalLink url={value} />
-          </div>
-        </div>
-      ) : isUrl ? (
+    <div className="dark:border-border rounded-xl border border-neutral-200 p-3">
+      <div className="text-muted-foreground text-sm">{label}</div>
+      {isUrl ? (
         <ExternalLink url={value} />
       ) : (
-        <div className="text-gray-900">{value}</div>
+        <div className="text-foreground text-base font-medium">{value}</div>
       )}
     </div>
   );
@@ -100,32 +77,24 @@ export function MetadataGroup({
 }) {
   if (!items?.length) return null;
 
-  const imageUrl = getMetaImageUrl(items);
-
   return (
-    <div className="border border-gray-200 p-3 rounded-xl">
-      <div className="text-gray-500">{label}</div>
-      <div className="grid grid-cols-1 gap-3 mt-2">
-        {imageUrl && (
-          <div className="mb-4">
-            <ImagePreview url={imageUrl} />
-            <div className="mt-2">
-              <ExternalLink url={imageUrl} />
-            </div>
-          </div>
-        )}
+    <div className="dark:border-muted rounded-xl border p-3">
+      <div className="text-muted-foreground text-sm">{label}</div>
+      <div className="mt-2 grid grid-cols-2 gap-2">
         {items.map((item, i) => (
           <div
             key={i}
-            className="bg-gray-50 rounded-md px-3 py-2 break-words border border-gray-100"
+            className="bg-muted rounded-md border px-3 py-2 break-words dark:bg-neutral-900/50"
           >
-            <strong className="block text-sm text-gray-700 font-mono">
+            <strong className="text-muted-foreground block font-mono text-sm">
               {item.name}
             </strong>
             {isValidUrl(item.content) ? (
               <ExternalLink url={item.content} />
             ) : (
-              <div className="text-gray-900 text-base">{item.content}</div>
+              <div className="text-foreground text-base font-medium">
+                {item.content}
+              </div>
             )}
           </div>
         ))}
@@ -139,11 +108,11 @@ export function IconPreview({ url }: { url: string }) {
   const [isLoading, setIsLoading] = useState(true);
 
   if (isError) {
-    return <div className="text-red-500 text-xs">Failed to load icon</div>;
+    return <div className="text-xs text-red-500">Failed to load icon</div>;
   }
 
   return (
-    <div className="relative w-14 h-14 bg-gray-100 rounded-lg overflow-hidden">
+    <div className="bg-muted relative h-10 w-10 overflow-hidden rounded-lg">
       <Link href={url} target="_blank">
         <Image
           src={url}
@@ -158,7 +127,7 @@ export function IconPreview({ url }: { url: string }) {
       </Link>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-xs text-gray-400">...</div>
+          <div className="text-muted-foreground text-xs">...</div>
         </div>
       )}
     </div>
@@ -169,8 +138,8 @@ export function IconsGroup({ icons }: { icons: string[] }) {
   if (!icons?.length) return null;
 
   return (
-    <div className="border border-gray-200 p-3 rounded-xl">
-      <div className="text-gray-500 mb-3">Icons</div>
+    <div className="border-border rounded-xl border p-3">
+      <div className="text-muted-foreground mb-3">Icons</div>
       <div className="flex flex-wrap gap-2">
         {icons.map((url, i) => (
           <div key={i} className="flex flex-col items-start gap-2">

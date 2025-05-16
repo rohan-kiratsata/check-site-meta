@@ -12,7 +12,7 @@ export default function RawTab({ data }: { data: ScrapedMetadata }) {
         {data && (
           <motion.div
             key="metadata"
-            className="text-sm rounded-2xl space-y-6"
+            className="space-y-1.5 rounded-2xl text-sm"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}

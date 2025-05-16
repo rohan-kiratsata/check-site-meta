@@ -4,7 +4,7 @@ import * as cheerio from "cheerio";
 export const getAttr = (
   $: cheerio.CheerioAPI,
   selector: string,
-  attr: string
+  attr: string,
 ): string | null => $(selector).attr(attr) || null;
 
 export const getMeta = ($: cheerio.CheerioAPI, name: string): string | null =>
@@ -25,7 +25,7 @@ export const extractMetaTags = ($: cheerio.CheerioAPI): MetaTag[] => {
 // filter by prefix
 export const filterMetaTagsByPrefix = (
   metaTags: MetaTag[],
-  prefix: string
+  prefix: string,
 ): MetaTag[] => metaTags.filter((m) => m.name.startsWith(prefix));
 
 // Resolve a possibly relative URL to an absolute one using a base URL
@@ -62,9 +62,8 @@ export function getDescriptionFallback($: cheerio.CheerioAPI): string | null {
 // Image fallback: og:image, twitter:image, link[rel=image_src], first <img>
 export function getImageFallback(
   $: cheerio.CheerioAPI,
-  pageUrl: string
+  pageUrl: string,
 ): string | null {
-  const { resolveUrl } = require("./metadata-utils");
   const candidates = [
     $('meta[property="og:image"]').attr("content"),
     $('meta[name="twitter:image"]').attr("content"),
@@ -78,9 +77,8 @@ export function getImageFallback(
 // Icon fallback: icon links, /favicon.ico
 export function getIconFallback(
   $: cheerio.CheerioAPI,
-  pageUrl: string
+  pageUrl: string,
 ): string | null {
-  const { resolveUrl } = require("./metadata-utils");
   const candidates = [
     $('link[rel="icon"]').attr("href"),
     $('link[rel="shortcut icon"]').attr("href"),

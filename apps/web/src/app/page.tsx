@@ -9,6 +9,7 @@ import { useMetadata } from "@/hooks/useMetadata";
 import RecentURLs from "@/components/recent-urls";
 import NotFound from "@/components/not-found";
 import RawTab from "@/components/raw-tab";
+import CopyCodeTab from "@/components/cpy-code-tab";
 export default function HomePage() {
   const {
     url,
@@ -22,9 +23,9 @@ export default function HomePage() {
   } = useMetadata();
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center justify-start px-4 py-16 space-y-8">
+    <main className="flex min-h-screen flex-col items-center justify-start space-y-8 px-4 py-16 text-gray-900 dark:text-neutral-100">
       <FloatingFooter />
-      <h1 className="md:text-3xl text-2xl text-center font-semibold tracking-tight font-mono">
+      <h1 className="text-center font-mono text-2xl font-semibold tracking-tight md:text-3xl dark:text-neutral-100">
         Check Site Metadata
       </h1>
 
@@ -40,7 +41,7 @@ export default function HomePage() {
         {loading && (
           <motion.div
             key="loading"
-            className="text-gray-500 text-sm"
+            className="text-sm text-gray-500"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -68,11 +69,13 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            className="max-w-full min-w-full"
           >
             <Tabs defaultValue="tags">
-              <TabsList className="grid grid-cols-2 border mx-auto w-lg">
+              <TabsList className="mx-auto">
                 <TabsTrigger value="tags">Raw Tags</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="code">Code</TabsTrigger>
               </TabsList>
 
               <TabsContent value="tags" className="py-5">
@@ -81,6 +84,10 @@ export default function HomePage() {
 
               <TabsContent value="preview">
                 <PreviewTab data={data} />
+              </TabsContent>
+
+              <TabsContent value="code" className="py-5">
+                <CopyCodeTab data={data} />
               </TabsContent>
             </Tabs>
           </motion.div>

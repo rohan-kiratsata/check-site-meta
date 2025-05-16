@@ -23,7 +23,7 @@ export default function RecentURLs({
           key="empty-state"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="w-full max-w-xl space-y-4 text-sm text-gray-500"
+          className="w-full max-w-xl space-y-4 text-sm text-gray-500 dark:text-gray-400"
         >
           <div className="text-center">
             👋 Paste a URL to check its metadata
@@ -31,14 +31,14 @@ export default function RecentURLs({
 
           {history.length > 0 && (
             <div>
-              <div className="text-xs uppercase text-gray-400 mb-2">
+              <div className="mb-2 text-xs text-gray-400 uppercase dark:text-gray-500">
                 Recent URLs
               </div>
               <ul className="space-y-2">
                 {history.map((url: string, i: number) => (
                   <li
                     key={`history-${i}`}
-                    className="cursor-pointer underline text-blue-600 hover:text-blue-800 transition"
+                    className="cursor-pointer text-blue-600 underline transition hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                     onClick={() => {
                       setUrl(url);
                       fetchMetadata(url);

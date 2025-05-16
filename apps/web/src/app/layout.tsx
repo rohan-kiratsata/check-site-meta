@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -92,17 +94,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="canonical" href="https://checksitemeta.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <head>
-          <link rel="canonical" href="https://checksitemeta.com" />
-        </head>
-        {children}
-        <Toaster />
-        <Analytics />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || ""} />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="mx-auto max-w-3xl px-2 md:max-w-5xl">
+            {children}
+          </main>
+          <div className="fixed right-4 bottom-4">
+            <ThemeToggle />
+          </div>
+          <Toaster />
+          <Analytics />
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || ""} />
+        </ThemeProvider>
       </body>
     </html>
   );
