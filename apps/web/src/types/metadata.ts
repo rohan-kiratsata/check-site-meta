@@ -29,3 +29,16 @@ export interface ScraperConfig {
   followRedirects?: boolean;
   maxRedirects?: number;
 }
+
+export interface Metadata {
+  title: string | null;
+  description: string | null;
+  author: string | null;
+  keywords: string | null;
+  ogTags: { name: string; content: string }[];
+  twitterTags: { name: string; content: string }[];
+  icons: string[];
+  url: string;
+  error?: boolean;
+  message?: string;
+}

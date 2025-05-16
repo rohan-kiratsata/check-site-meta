@@ -1,17 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-
-export interface Metadata {
-  title: string | null;
-  description: string | null;
-  author: string | null;
-  keywords: string | null;
-  ogTags: { name: string; content: string }[];
-  twitterTags: { name: string; content: string }[];
-  icons: string[];
-  url: string;
-  error?: boolean;
-  message?: string;
-}
+import { Metadata } from "@/types/metadata";
+import { usePostHog } from "posthog-js/react";
 
 export function useMetadata() {
   const [url, setUrl] = useState("");
@@ -19,6 +8,7 @@ export function useMetadata() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [history, setHistory] = useState<string[]>([]);
+  const posthog = usePostHog();
 
   // Load history from localStorage on mount
   useEffect(() => {
@@ -31,7 +21,7 @@ export function useMetadata() {
     const existing = JSON.parse(localStorage.getItem("meta-history") || "[]");
     const updated = [url, ...existing.filter((u: string) => u !== url)].slice(
       0,
-      10
+      10,
     );
     localStorage.setItem("meta-history", JSON.stringify(updated));
     setHistory(updated);
@@ -54,20 +44,37 @@ export function useMetadata() {
       setData(null);
       try {
         const res = await fetch(
-          `/api/scrape?url=${encodeURIComponent(targetUrl)}`
+          `/api/scrape?url=${encodeURIComponent(targetUrl)}`,
         );
         if (!res.ok) throw new Error("Server error");
         const json = await res.json();
         if (json.error) throw new Error(json.message);
         setData(json);
         saveToHistory(targetUrl);
+
+        // Track successful search
+        posthog?.capture("metadata_search", {
+          url_domain: new URL(targetUrl).hostname,
+          success: true,
+          has_og_tags: json.ogTags?.length > 0,
+          has_twitter_tags: json.twitterTags?.length > 0,
+          has_icons: json.icons?.length > 0,
+        });
       } catch (err: any) {
         setError("Could not fetch metadata. " + err.message);
+        // Track failed search
+        posthog?.capture("metadata_search", {
+          url_domain: targetUrl.includes("http")
+            ? new URL(targetUrl).hostname
+            : "invalid_url",
+          success: false,
+          error_type: err.message,
+        });
       } finally {
         setLoading(false);
       }
     },
-    [url, saveToHistory]
+    [url, saveToHistory, posthog],
   );
 
   return {
