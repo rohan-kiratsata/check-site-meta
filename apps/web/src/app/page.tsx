@@ -10,6 +10,8 @@ import RecentURLs from "@/components/recent-urls";
 import NotFound from "@/components/not-found";
 import RawTab from "@/components/raw-tab";
 import CopyCodeTab from "@/components/cpy-code-tab";
+import SEOInsightsTab from "@/components/seo-insights-tab";
+
 export default function HomePage() {
   const {
     url,
@@ -76,6 +78,7 @@ export default function HomePage() {
                 <TabsTrigger value="tags">Raw Tags</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
                 <TabsTrigger value="code">Code</TabsTrigger>
+                <TabsTrigger value="seo">SEO Insights</TabsTrigger>
               </TabsList>
 
               <TabsContent value="tags" className="py-5">
@@ -88,6 +91,10 @@ export default function HomePage() {
 
               <TabsContent value="code" className="py-5">
                 <CopyCodeTab data={data} />
+              </TabsContent>
+
+              <TabsContent value="seo" className="py-5">
+                <SEOInsightsTab data={data} />
               </TabsContent>
             </Tabs>
           </motion.div>
