@@ -1,6 +1,8 @@
 import React from "react";
 import { toast } from "sonner";
 import { isValidUrl } from "@/lib/utils";
+import { motion } from "motion/react";
+import { ClearIcon, RefreshIcon } from "@/lib/icons";
 
 export default function SearchBar({
   url,
@@ -42,56 +44,43 @@ export default function SearchBar({
   };
 
   return (
-    <div className="flex border border-gray-200 bg-white overflow-hidden rounded-full">
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="mx-auto flex w-full max-w-md items-center justify-between rounded-full border border-gray-200 bg-white px-3 py-1 sm:max-w-lg md:max-w-2xl dark:border-neutral-800 dark:bg-neutral-900"
+    >
       <input
         type="text"
         placeholder="Enter a URL..."
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         onKeyDown={handleKeyPress}
-        className="flex-1 bg-transparent px-5 py-3 focus:outline-none placeholder:text-gray-400"
+        className="h-10 w-full placeholder:text-gray-400 focus:outline-none dark:bg-neutral-900 dark:text-gray-100 dark:placeholder:text-gray-500"
         disabled={isLoading}
       />
-      {url && (
+      <div className="flex items-center gap-3">
+        {url && (
+          <button
+            onClick={handleClear}
+            className="text-gray-400 transition hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+            disabled={isLoading}
+          >
+            <ClearIcon />
+          </button>
+        )}
         <button
-          onClick={handleClear}
-          className="px-3 text-gray-400 hover:text-gray-600 transition"
+          onClick={handleRefresh}
+          className={` ${
+            isLoading
+              ? "text-gray-400 dark:text-neutral-500"
+              : "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          } transition`}
           disabled={isLoading}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <RefreshIcon isLoading={isLoading} />
         </button>
-      )}
-      <button
-        onClick={handleRefresh}
-        className={`px-3 ${
-          isLoading ? "text-gray-400" : "text-blue-600 hover:text-blue-700"
-        } transition`}
-        disabled={isLoading}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className={`h-5 w-5 ${isLoading ? "animate-spin" : ""}`}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-    </div>
+      </div>
+    </motion.div>
   );
 }
