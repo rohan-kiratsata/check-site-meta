@@ -32,9 +32,7 @@ export function useMetadata() {
   const clearHistory = useCallback(() => {
     localStorage.removeItem("meta-history");
     setHistory([]);
-    // Track history clear event
-    posthog?.capture("clear_history");
-  }, [posthog]);
+  }, []);
 
   // Clear results
   const clearResults = useCallback(() => {
@@ -60,30 +58,13 @@ export function useMetadata() {
         if (json.error) throw new Error(json.message);
         setData(json);
         saveToHistory(targetUrl);
-
-        // Track successful search
-        posthog?.capture("metadata_search", {
-          url_domain: new URL(targetUrl).hostname,
-          success: true,
-          has_og_tags: json.ogTags?.length > 0,
-          has_twitter_tags: json.twitterTags?.length > 0,
-          has_icons: json.icons?.length > 0,
-        });
       } catch (err: any) {
         setError("Could not fetch metadata. " + err.message);
-        // Track failed search
-        posthog?.capture("metadata_search", {
-          url_domain: targetUrl.includes("http")
-            ? new URL(targetUrl).hostname
-            : "invalid_url",
-          success: false,
-          error_type: err.message,
-        });
       } finally {
         setLoading(false);
       }
     },
-    [url, saveToHistory, posthog],
+    [url, saveToHistory],
   );
 
   return {

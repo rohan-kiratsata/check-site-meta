@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ClearIcon, RefreshIcon } from "@/lib/icons";
 import { Settings2 } from "lucide-react";
 import SettingsDialog from "./settings-dialog";
+import { trackSearch } from "@/lib/analytics";
 
 export default function SearchBar({
   url,
@@ -21,7 +22,7 @@ export default function SearchBar({
   clearResults?: () => void;
   clearHistory?: () => void;
 }) {
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isLoading && url.trim()) {
       if (!isValidUrl(url.trim())) {
         toast.error(
@@ -29,6 +30,8 @@ export default function SearchBar({
         );
         return;
       }
+      // Track the search before fetching metadata
+      trackSearch(url.trim(), undefined, "url_search");
       fetchMetadata();
     }
   };
@@ -48,6 +51,8 @@ export default function SearchBar({
       return;
     }
 
+    // Track the refresh search
+    trackSearch(url.trim(), undefined, "url_search_refresh");
     fetchMetadata();
   };
 

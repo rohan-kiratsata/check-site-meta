@@ -102,13 +102,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <PostHogProvider>
+        <PostHogProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <main className="mx-auto max-w-3xl px-2 md:max-w-5xl">
               {children}
             </main>
@@ -118,8 +118,8 @@ export default function RootLayout({
             <Toaster />
             <Analytics />
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || ""} />
-          </PostHogProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );
