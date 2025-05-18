@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { Metadata } from "@/types/metadata";
-import { usePostHog } from "posthog-js/react";
 import { normalizeUrl } from "@/lib/utils";
 
 export function useMetadata() {
@@ -9,7 +8,6 @@ export function useMetadata() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [history, setHistory] = useState<string[]>([]);
-  const posthog = usePostHog();
 
   // Load history from localStorage on mount
   useEffect(() => {
