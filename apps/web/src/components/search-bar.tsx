@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { ClearIcon, RefreshIcon } from "@/lib/icons";
 import { Settings2 } from "lucide-react";
 import SettingsDialog from "./settings-dialog";
-import { trackSearch } from "@/lib/analytics";
 
 export default function SearchBar({
   url,
@@ -30,8 +29,7 @@ export default function SearchBar({
         );
         return;
       }
-      // Track the search before fetching metadata
-      trackSearch(url.trim(), undefined, "url_search");
+
       fetchMetadata();
     }
   };
@@ -51,8 +49,6 @@ export default function SearchBar({
       return;
     }
 
-    // Track the refresh search
-    trackSearch(url.trim(), undefined, "url_search_refresh");
     fetchMetadata();
   };
 
