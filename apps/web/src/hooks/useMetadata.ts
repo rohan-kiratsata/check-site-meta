@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Metadata } from "@/types/metadata";
 import { usePostHog } from "posthog-js/react";
+import { normalizeUrl } from "@/lib/utils";
 
 export function useMetadata() {
   const [url, setUrl] = useState("");
@@ -37,7 +38,7 @@ export function useMetadata() {
   // Fetch metadata
   const fetchMetadata = useCallback(
     async (customUrl?: string) => {
-      const targetUrl = customUrl?.trim() || url.trim();
+      const targetUrl = normalizeUrl(customUrl?.trim() || url.trim());
       if (!targetUrl) return;
       setLoading(true);
       setError("");

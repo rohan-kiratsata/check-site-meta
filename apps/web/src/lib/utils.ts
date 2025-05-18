@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export function getMetaImageUrl(
-  items: { name: string; content: string }[]
+  items: { name: string; content: string }[],
 ): string | null {
   if (!items?.length) return null;
 
@@ -24,12 +24,36 @@ export function getMetaImageUrl(
   return null;
 }
 export function isValidUrl(str: string): boolean {
+  // First check if it's a domain-like string (e.g. "supabase.com")
+  if (/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}/.test(str)) {
+    return true;
+  }
+
+  // Then check if it's a valid URL with protocol
   try {
-    const url = new URL(str);
-    return url.protocol === "http:" || url.protocol === "https:";
+    new URL(str.startsWith("http") ? str : `https://${str}`);
+    return true;
   } catch {
     return false;
   }
+}
+
+export function normalizeUrl(url: string): string {
+  // If URL already has a protocol, return as is
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    return url;
+  }
+
+  // Add https:// protocol if missing
+  return `https://${url}`;
+}
+
+export function ensureHttps(url: string): string {
+  // Convert http to https if needed
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  return url;
 }
 
 export function isImageUrl(url: string): boolean {
