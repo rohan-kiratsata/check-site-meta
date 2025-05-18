@@ -22,11 +22,12 @@ export default function HomePage() {
     history,
     fetchMetadata,
     clearResults,
+    clearHistory,
   } = useMetadata();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start space-y-8 px-4 py-16 text-gray-900 dark:text-neutral-100">
-      <FloatingFooter />
+      {/* <FloatingFooter /> */}
       <h1 className="text-center font-mono text-2xl font-semibold tracking-tight md:text-3xl dark:text-neutral-100">
         Check Site Metadata
       </h1>
@@ -37,6 +38,7 @@ export default function HomePage() {
         fetchMetadata={fetchMetadata}
         isLoading={loading}
         clearResults={clearResults}
+        clearHistory={clearHistory}
       />
 
       <AnimatePresence mode="wait">

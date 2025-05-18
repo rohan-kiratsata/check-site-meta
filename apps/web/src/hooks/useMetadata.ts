@@ -28,6 +28,14 @@ export function useMetadata() {
     setHistory(updated);
   }, []);
 
+  // Clear history
+  const clearHistory = useCallback(() => {
+    localStorage.removeItem("meta-history");
+    setHistory([]);
+    // Track history clear event
+    posthog?.capture("clear_history");
+  }, [posthog]);
+
   // Clear results
   const clearResults = useCallback(() => {
     setData(null);
@@ -87,5 +95,6 @@ export function useMetadata() {
     history,
     fetchMetadata,
     clearResults,
+    clearHistory,
   };
 }

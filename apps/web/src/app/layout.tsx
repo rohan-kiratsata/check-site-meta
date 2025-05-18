@@ -112,9 +112,9 @@ export default function RootLayout({
             <main className="mx-auto max-w-3xl px-2 md:max-w-5xl">
               {children}
             </main>
-            <div className="fixed right-4 bottom-4">
+            {/* <div className="fixed right-4 bottom-4">
               <ThemeToggle />
-            </div>
+            </div> */}
             <Toaster />
             <Analytics />
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || ""} />
