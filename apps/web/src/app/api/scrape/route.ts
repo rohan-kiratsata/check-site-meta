@@ -1,4 +1,5 @@
 import { fetchMetadata } from "@/lib/metadata";
+import { normalizeUrl } from "@/lib/utils";
 
 export const runtime = "edge";
 
@@ -9,18 +10,19 @@ export async function GET(req: Request) {
   if (!url) {
     return new Response(
       JSON.stringify({ error: true, message: "Missing URL param" }),
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   try {
-    // Basic sanity check
-    const safeURL = new URL(url);
+    // Normalize and validate URL
+    const normalizedUrl = normalizeUrl(url);
+    const safeURL = new URL(normalizedUrl);
     if (!["http:", "https:"].includes(safeURL.protocol)) {
       throw new Error("Invalid protocol");
     }
 
-    const data = await fetchMetadata(url);
+    const data = await fetchMetadata(normalizedUrl);
     console.log(data);
     return Response.json(data, {
       status: 200,

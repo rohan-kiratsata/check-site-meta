@@ -20,7 +20,9 @@ export default function SearchBar({
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isLoading && url.trim()) {
       if (!isValidUrl(url.trim())) {
-        toast.error("Please enter a valid http/https URL");
+        toast.error(
+          "Please enter a valid domain (e.g. supabase.com) or full URL",
+        );
         return;
       }
       fetchMetadata();
@@ -36,7 +38,9 @@ export default function SearchBar({
     if (!url.trim() || isLoading) return;
 
     if (!isValidUrl(url.trim())) {
-      toast.error("Please enter a valid http/https URL");
+      toast.error(
+        "Please enter a valid domain (e.g. supabase.com) or full URL",
+      );
       return;
     }
 
@@ -52,7 +56,7 @@ export default function SearchBar({
     >
       <input
         type="text"
-        placeholder="Enter a URL..."
+        placeholder="Enter a domain or URL..."
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         onKeyDown={handleKeyPress}
