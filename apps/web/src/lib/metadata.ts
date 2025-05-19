@@ -5,7 +5,6 @@ import type {
   MetadataResponse,
 } from "../types/metadata";
 import {
-  getAttr,
   extractMetaTags,
   filterMetaTagsByPrefix,
   resolveUrl,
@@ -14,7 +13,6 @@ import {
   getAuthorFallback,
   getKeywordsFallback,
   getIconFallback,
-  getImageFallback,
 } from "./metadata-utils";
 
 // Main Scraper
@@ -53,10 +51,10 @@ export async function fetchMetadata(url: string): Promise<MetadataResponse> {
     const resolveMetaImageUrls = (tags: typeof metaTags, pageUrl: string) =>
       tags.map((tag) =>
         ["og:image", "og:image:secure_url", "twitter:image"].includes(
-          tag.name
+          tag.name,
         ) && tag.content
           ? { ...tag, content: resolveUrl(tag.content, pageUrl) }
-          : tag
+          : tag,
       );
 
     const ogTagsAbs = resolveMetaImageUrls(ogTags, url);

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { Metadata } from "@/types/metadata";
-import { usePostHog } from "posthog-js/react";
 import { normalizeUrl } from "@/lib/utils";
 
 export function useMetadata() {
@@ -9,7 +8,6 @@ export function useMetadata() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [history, setHistory] = useState<string[]>([]);
-  const posthog = usePostHog();
 
   // Load history from localStorage on mount
   useEffect(() => {
@@ -26,6 +24,12 @@ export function useMetadata() {
     );
     localStorage.setItem("meta-history", JSON.stringify(updated));
     setHistory(updated);
+  }, []);
+
+  // Clear history
+  const clearHistory = useCallback(() => {
+    localStorage.removeItem("meta-history");
+    setHistory([]);
   }, []);
 
   // Clear results
@@ -52,30 +56,13 @@ export function useMetadata() {
         if (json.error) throw new Error(json.message);
         setData(json);
         saveToHistory(targetUrl);
-
-        // Track successful search
-        posthog?.capture("metadata_search", {
-          url_domain: new URL(targetUrl).hostname,
-          success: true,
-          has_og_tags: json.ogTags?.length > 0,
-          has_twitter_tags: json.twitterTags?.length > 0,
-          has_icons: json.icons?.length > 0,
-        });
       } catch (err: any) {
         setError("Could not fetch metadata. " + err.message);
-        // Track failed search
-        posthog?.capture("metadata_search", {
-          url_domain: targetUrl.includes("http")
-            ? new URL(targetUrl).hostname
-            : "invalid_url",
-          success: false,
-          error_type: err.message,
-        });
       } finally {
         setLoading(false);
       }
     },
-    [url, saveToHistory, posthog],
+    [url, saveToHistory],
   );
 
   return {
@@ -87,5 +74,6 @@ export function useMetadata() {
     history,
     fetchMetadata,
     clearResults,
+    clearHistory,
   };
 }
