@@ -1,16 +1,35 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import SearchBar from "@/components/search-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PreviewTab from "@/components/preview-tab";
 import { useMetadata } from "@/hooks/useMetadata";
 import RecentURLs from "@/components/recent-urls";
 import NotFound from "@/components/not-found";
-import RawTab from "@/components/raw-tab";
-import CopyCodeTab from "@/components/cpy-code-tab";
-import SEOInsightsTab from "@/components/seo-insights-tab";
-import { DownloadReportButton } from "@/components/download-report-btn";
+
+// Lazy load components that aren't needed for initial render
+const PreviewTab = dynamic(() => import("@/components/preview-tab"), {
+  ssr: false,
+  loading: () => <div className="py-4">Loading preview...</div>,
+});
+const RawTab = dynamic(() => import("@/components/raw-tab"), {
+  ssr: true,
+});
+const CopyCodeTab = dynamic(() => import("@/components/cpy-code-tab"), {
+  ssr: false,
+});
+const SEOInsightsTab = dynamic(() => import("@/components/seo-insights-tab"), {
+  ssr: false,
+});
+const DownloadReportButton = dynamic(
+  () =>
+    import("@/components/download-report-btn").then(
+      (mod) => mod.DownloadReportButton,
+    ),
+  { ssr: false },
+);
 
 export default function HomePage() {
   const {
@@ -83,28 +102,58 @@ export default function HomePage() {
                   <TabsTrigger value="seo">SEO Insights</TabsTrigger>
                 </TabsList>
                 <div>
-                  <DownloadReportButton
-                    url={url}
-                    metadata={data}
-                    disabled={loading}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="h-8 w-24 animate-pulse rounded bg-gray-100" />
+                    }
+                  >
+                    <DownloadReportButton
+                      url={url}
+                      metadata={data}
+                      disabled={loading}
+                    />
+                  </Suspense>
                 </div>
               </div>
 
               <TabsContent value="tags" className="py-5">
-                <RawTab data={data} />
+                <Suspense
+                  fallback={
+                    <div className="h-32 animate-pulse rounded bg-gray-100" />
+                  }
+                >
+                  <RawTab data={data} />
+                </Suspense>
               </TabsContent>
 
               <TabsContent value="preview">
-                <PreviewTab data={data} />
+                <Suspense
+                  fallback={
+                    <div className="h-64 animate-pulse rounded bg-gray-100" />
+                  }
+                >
+                  <PreviewTab data={data} />
+                </Suspense>
               </TabsContent>
 
               <TabsContent value="code" className="py-5">
-                <CopyCodeTab data={data} />
+                <Suspense
+                  fallback={
+                    <div className="h-32 animate-pulse rounded bg-gray-100" />
+                  }
+                >
+                  <CopyCodeTab data={data} />
+                </Suspense>
               </TabsContent>
 
               <TabsContent value="seo" className="py-5">
-                <SEOInsightsTab data={data} />
+                <Suspense
+                  fallback={
+                    <div className="h-32 animate-pulse rounded bg-gray-100" />
+                  }
+                >
+                  <SEOInsightsTab data={data} />
+                </Suspense>
               </TabsContent>
             </Tabs>
           </motion.div>

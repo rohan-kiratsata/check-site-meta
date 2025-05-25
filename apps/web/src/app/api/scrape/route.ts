@@ -23,15 +23,16 @@ export async function GET(req: Request) {
     }
 
     const data = await fetchMetadata(normalizedUrl);
-    console.log(data);
+
+    // Improve caching - longer TTL and stale-while-revalidate
     return Response.json(data, {
       status: 200,
       headers: {
-        "Cache-Control": "s-maxage=300, stale-while-revalidate=86400",
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   } catch (err: any) {
-    console.log(err);
+    console.error("Error fetching metadata:", err);
     return new Response(JSON.stringify({ error: true, message: err.message }), {
       status: 500,
     });

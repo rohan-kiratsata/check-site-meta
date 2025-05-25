@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
@@ -15,8 +15,11 @@ export const DownloadReportButton: React.FC<DownloadReportButtonProps> = ({
   metadata,
   disabled = false,
 }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const handleDownload = async () => {
     try {
+      setIsGenerating(true);
       const response = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: {
@@ -52,19 +55,21 @@ export const DownloadReportButton: React.FC<DownloadReportButtonProps> = ({
     } catch (error) {
       console.error("Error downloading report:", error);
       toast.error("Failed to download report");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   return (
     <Button
       onClick={handleDownload}
-      disabled={disabled}
+      disabled={disabled || isGenerating}
       variant="outline"
       className="flex items-center gap-2 text-sm"
       size={"sm"}
     >
       <Download className="h-4 w-4" />
-      Download Report
+      {isGenerating ? "Generating..." : "Download Report"}
     </Button>
   );
 };
