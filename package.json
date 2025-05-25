@@ -2,8 +2,7 @@
     "name": "check-site-meta-monorepo",
     "private": true,
     "workspaces": [
-      "apps/*",
-      "packages/*"
+      "apps/*"
     ],
     "scripts": {
       "dev": "turbo dev",
