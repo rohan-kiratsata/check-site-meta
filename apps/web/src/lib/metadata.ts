@@ -15,14 +15,34 @@ import {
   getIconFallback,
 } from "./metadata-utils";
 
+// Cache for metadata responses to avoid refetching
+const metadataCache = new Map<
+  string,
+  { data: MetadataResponse; timestamp: number }
+>();
+const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+
 // Main Scraper
 export async function fetchMetadata(url: string): Promise<MetadataResponse> {
   try {
+    // Check cache first
+    const now = Date.now();
+    const cached = metadataCache.get(url);
+    if (cached && now - cached.timestamp < CACHE_TTL) {
+      return cached.data;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     const response = await fetch(url, {
       headers: {
         "User-Agent": "MetadataCheckerBot/1.0 (+https://checksitemeta.com)",
       },
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -70,8 +90,13 @@ export async function fetchMetadata(url: string): Promise<MetadataResponse> {
       icons,
       url,
     };
+
+    // Store in cache
+    metadataCache.set(url, { data: result, timestamp: now });
+
     return result;
   } catch (err: any) {
-    return { error: true, message: err.message } as MetadataError;
+    const errorResult = { error: true, message: err.message } as MetadataError;
+    return errorResult;
   }
 }
