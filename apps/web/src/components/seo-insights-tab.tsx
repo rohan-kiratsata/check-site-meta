@@ -4,6 +4,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Code,
+  Zap,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
@@ -158,6 +160,62 @@ export default function SEOInsightsTab({ data }: { data: ScrapedMetadata }) {
           "Consider using SVG favicon for scalability",
         ],
         importance: "Low",
+      },
+    },
+    // Structured Data check
+    {
+      title: "Structured Data",
+      status: data.structuredData ? "success" : "warning",
+      message: data.structuredData
+        ? "Structured data found"
+        : "No structured data detected",
+      details: {
+        current: data.structuredData
+          ? "Structured data is implemented"
+          : "No structured data found on the page",
+        recommendations: [
+          "Implement Schema.org markup for your content type",
+          "Use JSON-LD format for better compatibility",
+          "Include essential properties like name, description, and image",
+          "Test your structured data with Google's Rich Results Test",
+        ],
+        importance: "Medium",
+      },
+    },
+    // Canonical URL check
+    {
+      title: "Canonical URL",
+      status: data.canonicalUrl ? "success" : "warning",
+      message: data.canonicalUrl
+        ? "Canonical URL is defined"
+        : "No canonical URL found",
+      details: {
+        current: data.canonicalUrl
+          ? `Canonical URL: ${data.canonicalUrl}`
+          : "No canonical URL found",
+        recommendations: [
+          "Always specify a canonical URL to prevent duplicate content issues",
+          "Ensure the canonical URL is the preferred version of the page",
+          "Use absolute URLs for canonical tags",
+          "Implement canonical tags consistently across your site",
+        ],
+        importance: "Medium",
+      },
+    },
+    // Mobile Friendliness hint
+    {
+      title: "Mobile Friendliness",
+      status: "warning",
+      message: "Mobile friendliness should be tested separately",
+      details: {
+        current: "Mobile friendliness cannot be determined from metadata alone",
+        recommendations: [
+          "Test your site with Google's Mobile-Friendly Test",
+          "Ensure responsive design with appropriate viewport meta tag",
+          "Optimize tap targets for mobile users (at least 48x48px)",
+          "Avoid horizontal scrolling on mobile devices",
+        ],
+        importance: "High",
       },
     },
   ];

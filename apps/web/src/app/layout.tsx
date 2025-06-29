@@ -106,6 +106,30 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Check Site Metadata",
+              url: "https://checksitemeta.com",
+              description:
+                "Instantly check Open Graph, Twitter cards, favicon, and SEO tags from any URL.",
+              applicationCategory: "WebDevelopmentTool",
+              operatingSystem: "Any",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              screenshot: {
+                "@type": "ImageObject",
+                url: "https://checksitemeta.com/og-image.png",
+              },
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

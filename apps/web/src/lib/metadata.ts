@@ -64,8 +64,12 @@ export async function fetchMetadata(url: string): Promise<MetadataResponse> {
     const author = getAuthorFallback($);
     const keywords = getKeywordsFallback($);
     const icons = [getIconFallback($, url)].filter(Boolean) as string[];
-    // Optionally, extract main image (e.g., og:image)
-    // const mainImage = getImageFallback($, url);
+
+    // Check for structured data
+    const structuredData = $('script[type="application/ld+json"]').length > 0;
+
+    // Check for canonical URL
+    const canonicalUrl = $('link[rel="canonical"]').attr("href") || null;
 
     // Map og:image, og:image:secure_url, twitter:image to absolute URLs
     const resolveMetaImageUrls = (tags: typeof metaTags, pageUrl: string) =>
@@ -89,6 +93,8 @@ export async function fetchMetadata(url: string): Promise<MetadataResponse> {
       twitterTags: twitterTagsAbs,
       icons,
       url,
+      structuredData,
+      canonicalUrl,
     };
 
     // Store in cache

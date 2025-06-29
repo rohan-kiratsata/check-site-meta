@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMetadata } from "@/hooks/useMetadata";
 import RecentURLs from "@/components/recent-urls";
 import NotFound from "@/components/not-found";
+import FloatingFooter from "@/components/floating-footer";
 
 // Lazy load components that aren't needed for initial render
 const PreviewTab = dynamic(() => import("@/components/preview-tab"), {
@@ -159,6 +160,8 @@ export default function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <FloatingFooter />
     </main>
   );
 }

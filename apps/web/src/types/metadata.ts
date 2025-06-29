@@ -14,6 +14,8 @@ export interface ScrapedMetadata {
   twitterTags: MetaTag[];
   icons: string[];
   url: string;
+  structuredData?: boolean;
+  canonicalUrl?: string | null;
 }
 
 export interface MetadataError {
@@ -41,4 +43,6 @@ export interface Metadata {
   url: string;
   error?: boolean;
   message?: string;
+  structuredData?: boolean;
+  canonicalUrl?: string | null;
 }
