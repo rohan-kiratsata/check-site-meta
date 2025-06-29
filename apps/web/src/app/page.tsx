@@ -10,7 +10,6 @@ import RecentURLs from "@/components/recent-urls";
 import NotFound from "@/components/not-found";
 import FloatingFooter from "@/components/floating-footer";
 
-// Lazy load components that aren't needed for initial render
 const PreviewTab = dynamic(() => import("@/components/preview-tab"), {
   ssr: false,
   loading: () => <div className="py-4">Loading preview...</div>,

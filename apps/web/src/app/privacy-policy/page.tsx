@@ -14,9 +14,10 @@ export default function PrivacyPolicyPage() {
 
       <h2>Introduction</h2>
       <p>
-        Check Site Metadata ("we", "our", or "us") is committed to protecting
-        your privacy. This Privacy Policy explains how we collect, use, and
-        safeguard your information when you use our website at{" "}
+        Check Site Metadata (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or
+        &ldquo;us&rdquo;) is committed to protecting your privacy. This Privacy
+        Policy explains how we collect, use, and safeguard your information when
+        you use our website at{" "}
         <Link href="https://checksitemeta.com">checksitemeta.com</Link>.
       </p>
 
@@ -47,9 +48,9 @@ export default function PrivacyPolicyPage() {
 
       <h2>Data Storage</h2>
       <p>
-        URLs and metadata results are stored in your browser's local storage for
-        convenience, allowing you to see your recent checks. This data is not
-        transmitted to our servers for permanent storage.
+        URLs and metadata results are stored in your browser&apos;s local
+        storage for convenience, allowing you to see your recent checks. This
+        data is not transmitted to our servers for permanent storage.
       </p>
 
       <h2>Analytics and Cookies</h2>

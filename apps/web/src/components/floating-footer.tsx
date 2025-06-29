@@ -3,7 +3,7 @@ import React from "react";
 
 export default function FloatingFooter() {
   return (
-    <div className="fixed bottom-4 left-4 flex items-center space-x-2 rounded-lg bg-white/60 p-2 px-3 text-sm text-gray-500 backdrop-blur-sm dark:bg-neutral-800/60 dark:text-gray-300">
+    <div className="fixed bottom-4 left-1/2 flex -translate-x-1/2 items-center space-x-2 rounded-lg bg-white/60 p-2 px-3 text-sm text-gray-500 backdrop-blur-sm dark:bg-neutral-800/60 dark:text-gray-300">
       <a
         href="https://github.com/rohan-kiratsata/check-site-meta"
         target="_blank"
@@ -30,8 +30,7 @@ export default function FloatingFooter() {
       <Link href="/terms" className="hover:underline">
         Terms
       </Link>
-      <span>•</span>
-      <span className="hidden sm:inline">
+      <span className="sr-only">
         Check website metadata, OG tags, Twitter cards, and favicon information
       </span>
     </div>

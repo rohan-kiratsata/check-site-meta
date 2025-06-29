@@ -17,7 +17,7 @@ export default function TermsPage() {
         Welcome to Check Site Metadata! These Terms of Service govern your use
         of our website located at{" "}
         <Link href="https://checksitemeta.com">checksitemeta.com</Link>{" "}
-        ("Service").
+        (&ldquo;Service&rdquo;).
       </p>
       <p>
         By accessing or using the Service, you agree to be bound by these Terms.
@@ -29,8 +29,8 @@ export default function TermsPage() {
       <p>
         Check Site Metadata provides a tool for checking and analyzing website
         metadata, including Open Graph tags, Twitter cards, and other SEO
-        elements. The Service is provided "as is" and "as available" without any
-        warranties, expressed or implied.
+        elements. The Service is provided &ldquo;as is&rdquo; and &ldquo;as
+        available&rdquo; without any warranties, expressed or implied.
       </p>
 
       <h2>Limitations</h2>
